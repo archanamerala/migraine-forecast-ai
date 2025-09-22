@@ -33,7 +33,7 @@ const HeroSection = () => {
             <span className="text-foreground">Migraine Prediction</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-foreground font-light max-w-2xl mx-auto leading-relaxed">
             Predicting migraines before they strike using advanced AI and lifestyle data
           </p>
           
