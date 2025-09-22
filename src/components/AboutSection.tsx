@@ -85,6 +85,40 @@ const AboutSection = () => {
             </div>
           </div>
         </div>
+        
+        {/* Small Technology Icons Row */}
+        <div className="mt-16 text-center">
+          <h4 className="text-lg font-medium text-muted-foreground mb-8">Core Technologies</h4>
+          <div className="flex justify-center items-center space-x-12 max-w-2xl mx-auto">
+            <div className="flex flex-col items-center group">
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xs text-muted-foreground">AI & ML</span>
+            </div>
+            
+            <div className="flex flex-col items-center group">
+              <div className="w-12 h-12 bg-gradient-to-r from-accent to-accent-light rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
+                <Cloud className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xs text-muted-foreground">Weather</span>
+            </div>
+            
+            <div className="flex flex-col items-center group">
+              <div className="w-12 h-12 bg-gradient-to-r from-success to-success/80 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xs text-muted-foreground">Lifestyle</span>
+            </div>
+            
+            <div className="flex flex-col items-center group">
+              <div className="w-12 h-12 bg-gradient-to-r from-warning to-warning/80 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xs text-muted-foreground">Analytics</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
