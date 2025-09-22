@@ -43,10 +43,15 @@ const AboutSection = () => {
             return (
               <div 
                 key={index} 
-                className="wellness-card text-center group"
+                className="wellness-card text-center group relative"
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                {/* Small elegant corner icon */}
+                <div className="absolute top-4 right-4 w-6 h-6 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-gradient-primary rounded-full" />
+                </div>
+                
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-primary rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-soft">
                   <Icon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
