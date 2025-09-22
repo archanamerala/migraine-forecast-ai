@@ -2,41 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Health AI Design System - Therapeutic blues to calming purples */
 
 @layer base {
   :root {
+    /* Core health-focused color palette */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 225 25% 15%;
+    
+    /* Therapeutic blue primary */
+    --primary: 213 85% 58%; /* Healing blue #4A90E2 */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 213 85% 70%;
+    --primary-dark: 213 85% 45%;
+    
+    /* Calming purple accent */
+    --accent: 254 88% 65%; /* Wellness purple #8B5CF6 */
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 254 88% 75%;
+    --accent-dark: 254 88% 55%;
+    
+    /* Soft neutral palette */
+    --secondary: 220 15% 97%;
+    --secondary-foreground: 225 25% 25%;
+    --muted: 220 13% 95%;
+    --muted-foreground: 225 10% 45%;
+    
+    /* Success states for positive predictions */
+    --success: 145 85% 50%;
+    --success-foreground: 0 0% 100%;
+    
+    /* Warning states for medium risk */
+    --warning: 45 100% 55%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Alert states for high risk */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* UI elements */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 225 25% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --popover-foreground: 225 25% 15%;
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 213 85% 58%;
+    
+    /* Health gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(213 85% 58%), hsl(254 88% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(213 85% 58%) 0%, hsl(254 88% 65%) 50%, hsl(280 85% 70%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220 15% 97%), hsl(0 0% 100%));
+    --gradient-prediction: linear-gradient(90deg, hsl(213 85% 58%), hsl(254 88% 65%));
+    
+    /* Wellness shadows */
+    --shadow-soft: 0 4px 20px hsl(213 85% 58% / 0.1);
+    --shadow-card: 0 8px 30px hsl(213 85% 58% / 0.12);
+    --shadow-hero: 0 20px 60px hsl(213 85% 58% / 0.15);
+    --shadow-prediction: 0 10px 40px hsl(254 88% 65% / 0.2);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +130,122 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+}
+
+@layer components {
+  /* Health-focused button variants */
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary to-accent text-primary-foreground;
+    @apply px-8 py-4 rounded-xl font-semibold;
+    @apply transition-all duration-300 transform hover:scale-105;
+    @apply shadow-lg hover:shadow-xl;
+  }
+
+  .btn-prediction {
+    @apply bg-gradient-to-r from-accent to-primary text-accent-foreground;
+    @apply px-6 py-3 rounded-lg font-medium;
+    @apply transition-all duration-300 hover:shadow-prediction;
+  }
+
+  /* Wellness cards */
+  .wellness-card {
+    @apply bg-white/80 backdrop-blur-sm border border-border/50;
+    @apply rounded-2xl p-6 transition-all duration-300;
+    @apply hover:shadow-card hover:scale-[1.02] hover:bg-white/90;
+  }
+
+  .prediction-card {
+    @apply bg-gradient-to-br from-white to-secondary/30;
+    @apply border border-primary/10 rounded-2xl p-8;
+    @apply shadow-prediction transition-all duration-500;
+  }
+
+  /* Health gradients */
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  /* Animation utilities */
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+  }
+
+  .slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* Scroll reveal animations */
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .reveal-on-scroll.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .text-hero-gradient {
+    background: var(--gradient-hero);
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Custom shadows */
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-hero {
+    box-shadow: var(--shadow-hero);
+  }
+
+  .shadow-prediction {
+    box-shadow: var(--shadow-prediction);
+  }
+}
+
+/* Keyframe animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 20px hsl(213 85% 58% / 0.3); }
+  100% { box-shadow: 0 0 40px hsl(254 88% 65% / 0.6); }
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
