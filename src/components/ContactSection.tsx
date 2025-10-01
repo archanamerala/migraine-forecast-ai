@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Send, User, MessageCircle } from "lucide-react";
+import { Mail, Send, User, MessageCircle, Phone, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const ContactSection = () => {
@@ -59,6 +59,41 @@ const ContactSection = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Interested in our AI migraine prediction system? We'd love to hear from you
           </p>
+        </div>
+
+        {/* Contact Details */}
+        <div className="wellness-card max-w-4xl mx-auto mb-12 p-8">
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="flex items-center space-x-3 p-4 bg-white/30 rounded-lg hover:bg-white/40 transition-all">
+              <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+              <span className="text-foreground break-all">archanamerala7@gmail.com</span>
+            </div>
+            
+            <div className="flex items-center space-x-3 p-4 bg-white/30 rounded-lg hover:bg-white/40 transition-all">
+              <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+              <span className="text-foreground">91+ 7671937201</span>
+            </div>
+            
+            <div className="flex items-center space-x-3 p-4 bg-white/30 rounded-lg hover:bg-white/40 transition-all">
+              <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
+              <span className="text-foreground">Puttur, AP</span>
+            </div>
+          </div>
+          
+          {/* Stay Updated Section */}
+          <div className="border-t border-border pt-8">
+            <h3 className="text-xl font-semibold mb-4 text-center text-foreground">Stay Updated</h3>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <Input 
+                type="email" 
+                placeholder="Your email" 
+                className="flex-1"
+              />
+              <Button className="bg-gradient-primary hover:opacity-90 transition-opacity">
+                Subscribe
+              </Button>
+            </div>
+          </div>
         </div>
         
         <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">

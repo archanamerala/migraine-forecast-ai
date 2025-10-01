@@ -1,6 +1,4 @@
-import { Brain, Cloud, Heart, Smartphone, TrendingUp, Users, Mail, Phone, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Brain, Cloud, Heart, Smartphone, TrendingUp, Users } from "lucide-react";
 
 const AboutSection = () => {
   const features = [
@@ -29,45 +27,6 @@ const AboutSection = () => {
   return (
     <section id="about" className="py-20 bg-gradient-to-br from-background via-secondary/30 to-background">
       <div className="container mx-auto px-6">
-        {/* Get in Touch Section */}
-        <div className="wellness-card max-w-4xl mx-auto mb-16 p-8">
-          <h2 className="text-3xl font-bold mb-8 text-center">
-            <span className="text-gradient">Get in Touch</span>
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="flex items-center space-x-3 p-4 bg-white/30 rounded-lg hover:bg-white/40 transition-all">
-              <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-              <span className="text-foreground break-all">archanamerala7@gmail.com</span>
-            </div>
-            
-            <div className="flex items-center space-x-3 p-4 bg-white/30 rounded-lg hover:bg-white/40 transition-all">
-              <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-              <span className="text-foreground">91+ 7671937201</span>
-            </div>
-            
-            <div className="flex items-center space-x-3 p-4 bg-white/30 rounded-lg hover:bg-white/40 transition-all">
-              <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
-              <span className="text-foreground">Puttur, AP</span>
-            </div>
-          </div>
-          
-          {/* Stay Updated Section */}
-          <div className="border-t border-border pt-8">
-            <h3 className="text-xl font-semibold mb-4 text-center text-foreground">Stay Updated</h3>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <Input 
-                type="email" 
-                placeholder="Your email" 
-                className="flex-1"
-              />
-              <Button className="bg-gradient-primary hover:opacity-90 transition-opacity">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </div>
-        
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             About <span className="text-gradient">Our Project</span>

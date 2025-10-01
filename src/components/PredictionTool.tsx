@@ -132,8 +132,8 @@ const PredictionTool = () => {
 
   const getRiskColor = (risk: string) => {
     switch(risk) {
-      case 'Low': return 'text-success';
-      case 'Medium': return 'text-warning';
+      case 'Low': return 'text-warning';
+      case 'Medium': return 'text-success';
       case 'High': return 'text-destructive';
       default: return 'text-muted-foreground';
     }
@@ -141,8 +141,8 @@ const PredictionTool = () => {
 
   const getRiskIcon = (risk: string) => {
     switch(risk) {
-      case 'Low': return <CheckCircle className="w-8 h-8 text-success" />;
-      case 'Medium': return <AlertTriangle className="w-8 h-8 text-warning" />;
+      case 'Low': return <CheckCircle className="w-8 h-8 text-warning" />;
+      case 'Medium': return <AlertTriangle className="w-8 h-8 text-success" />;
       case 'High': return <XCircle className="w-8 h-8 text-destructive" />;
       default: return null;
     }
@@ -320,8 +320,8 @@ const PredictionTool = () => {
                   <div className="w-full bg-muted rounded-full h-2 mt-4">
                     <div 
                       className={`h-2 rounded-full ${
-                        prediction.risk === 'Low' ? 'bg-success' :
-                        prediction.risk === 'Medium' ? 'bg-warning' : 'bg-destructive'
+                        prediction.risk === 'Low' ? 'bg-warning' :
+                        prediction.risk === 'Medium' ? 'bg-success' : 'bg-destructive'
                       }`}
                       style={{ width: `${prediction.confidence}%` }}
                     />
@@ -396,14 +396,14 @@ const PredictionTool = () => {
                 };
                 
                 const getRiskBadgeColor = () => {
-                  if (hourRisk === 'Low') return 'bg-success text-white';
-                  if (hourRisk === 'Medium') return 'bg-warning text-white';
+                  if (hourRisk === 'Low') return 'bg-warning text-white';
+                  if (hourRisk === 'Medium') return 'bg-success text-white';
                   return 'bg-destructive text-white';
                 };
                 
                 const getRiskCardColor = () => {
-                  if (hourRisk === 'Low') return 'bg-success';
-                  if (hourRisk === 'Medium') return 'bg-warning';
+                  if (hourRisk === 'Low') return 'bg-warning';
+                  if (hourRisk === 'Medium') return 'bg-success';
                   return 'bg-destructive';
                 };
                 
