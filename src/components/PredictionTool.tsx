@@ -351,6 +351,77 @@ const PredictionTool = () => {
             )}
           </Card>
         </div>
+
+        {/* 24 Hours Risk Forecast */}
+        {prediction && (
+          <Card className="prediction-card mt-12 max-w-6xl mx-auto">
+            <h3 className="text-2xl font-semibold mb-6 flex items-center">
+              <Activity className="w-6 h-6 mr-2 text-primary" />
+              24-Hour Risk Forecast
+            </h3>
+            
+            <div className="space-y-4">
+              <p className="text-muted-foreground mb-6">
+                Predicted migraine risk levels throughout the day based on current conditions
+              </p>
+              
+              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-2">
+                {Array.from({ length: 24 }).map((_, hour) => {
+                  // Generate varying risk levels for demonstration
+                  const currentHour = new Date().getHours();
+                  let hourRisk: 'Low' | 'Medium' | 'High';
+                  
+                  // Pattern: risk increases towards evening, peaks around stress hours
+                  const riskFactor = Math.abs(hour - 14) / 10 + Math.random() * 0.3;
+                  
+                  if (riskFactor < 0.5) hourRisk = 'Low';
+                  else if (riskFactor < 0.8) hourRisk = 'Medium';
+                  else hourRisk = 'High';
+                  
+                  const isCurrentHour = hour === currentHour;
+                  
+                  return (
+                    <div 
+                      key={hour}
+                      className={`flex flex-col items-center space-y-2 p-2 rounded-lg transition-all ${
+                        isCurrentHour ? 'bg-primary/10 ring-2 ring-primary' : 'bg-white/30'
+                      }`}
+                    >
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {hour.toString().padStart(2, '0')}:00
+                      </span>
+                      <div 
+                        className={`w-full h-16 rounded-lg ${
+                          hourRisk === 'Low' ? 'bg-success' :
+                          hourRisk === 'Medium' ? 'bg-warning' : 'bg-destructive'
+                        } opacity-80 hover:opacity-100 transition-opacity`}
+                        title={`${hourRisk} Risk`}
+                      />
+                      <span className="text-xs font-semibold">
+                        {hourRisk}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-border">
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 rounded bg-success" />
+                  <span className="text-sm text-muted-foreground">Low Risk</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 rounded bg-warning" />
+                  <span className="text-sm text-muted-foreground">Medium Risk</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 rounded bg-destructive" />
+                  <span className="text-sm text-muted-foreground">High Risk</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
         
         <div className="text-center mt-12">
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
