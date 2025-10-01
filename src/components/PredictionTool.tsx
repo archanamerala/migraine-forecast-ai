@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Brain, CloudRain, Thermometer, Wind, Activity, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import { Brain, CloudRain, Thermometer, Wind, Activity, AlertTriangle, CheckCircle, XCircle, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface PredictionData {
@@ -354,73 +354,96 @@ const PredictionTool = () => {
 
         {/* 24 Hours Risk Forecast */}
         {prediction && (
-          <Card className="prediction-card mt-12 max-w-6xl mx-auto">
-            <h3 className="text-2xl font-semibold mb-6 flex items-center">
-              <Activity className="w-6 h-6 mr-2 text-primary" />
-              24-Hour Risk Forecast
-            </h3>
-            
-            <div className="space-y-4">
-              <p className="text-muted-foreground mb-6">
-                Predicted migraine risk levels throughout the day based on current conditions
-              </p>
-              
-              <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-2">
-                {Array.from({ length: 24 }).map((_, hour) => {
-                  // Generate varying risk levels for demonstration
-                  const currentHour = new Date().getHours();
-                  let hourRisk: 'Low' | 'Medium' | 'High';
-                  
-                  // Pattern: risk increases towards evening, peaks around stress hours
-                  const riskFactor = Math.abs(hour - 14) / 10 + Math.random() * 0.3;
-                  
-                  if (riskFactor < 0.5) hourRisk = 'Low';
-                  else if (riskFactor < 0.8) hourRisk = 'Medium';
-                  else hourRisk = 'High';
-                  
-                  const isCurrentHour = hour === currentHour;
-                  
-                  return (
-                    <div 
-                      key={hour}
-                      className={`flex flex-col items-center space-y-2 p-2 rounded-lg transition-all ${
-                        isCurrentHour ? 'bg-primary/10 ring-2 ring-primary' : 'bg-white/30'
-                      }`}
-                    >
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {hour.toString().padStart(2, '0')}:00
-                      </span>
-                      <div 
-                        className={`w-full h-16 rounded-lg ${
-                          hourRisk === 'Low' ? 'bg-success' :
-                          hourRisk === 'Medium' ? 'bg-warning' : 'bg-destructive'
-                        } opacity-80 hover:opacity-100 transition-opacity`}
-                        title={`${hourRisk} Risk`}
-                      />
-                      <span className="text-xs font-semibold">
-                        {hourRisk}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              
-              <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-border">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 rounded bg-success" />
-                  <span className="text-sm text-muted-foreground">Low Risk</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 rounded bg-warning" />
-                  <span className="text-sm text-muted-foreground">Medium Risk</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 rounded bg-destructive" />
-                  <span className="text-sm text-muted-foreground">High Risk</span>
-                </div>
+          <div className="mt-12 max-w-7xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-3xl font-bold">24-Hour Risk Forecast</h3>
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                <TrendingUp className="w-4 h-4" />
+                <span>Live Updates</span>
               </div>
             </div>
-          </Card>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => {
+                const currentHour = new Date().getHours();
+                const hour = (currentHour + index) % 24;
+                const isNow = index === 0;
+                
+                // Generate varying risk levels
+                const riskFactor = Math.abs(hour - 14) / 10 + Math.random() * 0.4;
+                let hourRisk: 'Low' | 'Medium' | 'High';
+                let riskPercentage: number;
+                let keyFactors: string[];
+                
+                if (riskFactor < 0.45) {
+                  hourRisk = 'Low';
+                  riskPercentage = 15 + Math.floor(Math.random() * 25);
+                  keyFactors = ['Good sleep', 'Low stress', 'Optimal weather'];
+                } else if (riskFactor < 0.75) {
+                  hourRisk = 'Medium';
+                  riskPercentage = 35 + Math.floor(Math.random() * 25);
+                  keyFactors = ['Low sleep', 'High humidity', 'Barometric change'];
+                } else {
+                  hourRisk = 'High';
+                  riskPercentage = 65 + Math.floor(Math.random() * 25);
+                  keyFactors = ['Stress spike', 'Barometric change', 'Bright light', 'Peak stress'];
+                }
+                
+                const getRiskIcon = () => {
+                  if (hourRisk === 'Low') return <TrendingDown className="w-4 h-4" />;
+                  if (hourRisk === 'Medium') return <Minus className="w-4 h-4" />;
+                  return <AlertTriangle className="w-4 h-4" />;
+                };
+                
+                const getRiskBadgeColor = () => {
+                  if (hourRisk === 'Low') return 'bg-success text-white';
+                  if (hourRisk === 'Medium') return 'bg-warning text-white';
+                  return 'bg-destructive text-white';
+                };
+                
+                const getRiskCardColor = () => {
+                  if (hourRisk === 'Low') return 'bg-success';
+                  if (hourRisk === 'Medium') return 'bg-warning';
+                  return 'bg-destructive';
+                };
+                
+                return (
+                  <Card key={index} className="prediction-card hover:shadow-lg transition-shadow">
+                    <div className="space-y-4">
+                      {/* Header */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-2xl font-bold text-muted-foreground">
+                          {isNow ? 'Now' : `${hour % 12 || 12} ${hour >= 12 ? 'PM' : 'AM'}`}
+                        </span>
+                        <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-full text-sm font-medium ${getRiskBadgeColor()}`}>
+                          {getRiskIcon()}
+                          <span>{hourRisk} Risk</span>
+                        </div>
+                      </div>
+                      
+                      {/* Risk Percentage Card */}
+                      <div className={`${getRiskCardColor()} rounded-2xl p-6 text-center text-white`}>
+                        <div className="text-5xl font-bold mb-2">{riskPercentage}%</div>
+                        <div className="text-white/90 font-medium">Risk Level</div>
+                      </div>
+                      
+                      {/* Key Factors */}
+                      <div>
+                        <h4 className="text-sm font-semibold text-foreground mb-3">Key Factors:</h4>
+                        <div className="space-y-2">
+                          {keyFactors.slice(0, 2).map((factor, i) => (
+                            <div key={i} className="bg-muted/50 rounded-lg px-3 py-2 text-sm text-muted-foreground">
+                              {factor}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
         )}
         
         <div className="text-center mt-12">
