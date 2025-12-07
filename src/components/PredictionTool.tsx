@@ -11,6 +11,8 @@ interface PredictionData {
   sleep: number[];
   stress: number[];
   activity: number[];
+  screenTime: number[];
+  medication: string;
   temperature: string;
   humidity: string;
   pressure: string;
@@ -31,6 +33,8 @@ const PredictionTool = () => {
     sleep: [7],
     stress: [3],
     activity: [5],
+    screenTime: [4],
+    medication: '',
     temperature: '',
     humidity: '',
     pressure: '',
@@ -215,6 +219,34 @@ const PredictionTool = () => {
                     min={1}
                     step={1}
                     className="w-full"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="flex items-center">
+                    <Activity className="w-4 h-4 mr-2" />
+                    Screen Time: {formData.screenTime[0]}h
+                  </Label>
+                  <Slider
+                    value={formData.screenTime}
+                    onValueChange={(value) => setFormData({...formData, screenTime: value})}
+                    max={16}
+                    min={0}
+                    step={0.5}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="flex items-center">
+                    <Activity className="w-4 h-4 mr-2" />
+                    Medication Taken
+                  </Label>
+                  <Input
+                    type="text"
+                    placeholder="e.g., Ibuprofen, Sumatriptan"
+                    value={formData.medication}
+                    onChange={(e) => setFormData({...formData, medication: e.target.value})}
                   />
                 </div>
               </div>
