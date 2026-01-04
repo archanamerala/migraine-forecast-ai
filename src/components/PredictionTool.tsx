@@ -1,14 +1,17 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
-import { Brain, CloudRain, Thermometer, Wind, Activity, AlertTriangle, CheckCircle, XCircle, TrendingUp, TrendingDown, Minus, Database, Cpu, RefreshCw, Bell, Sparkles, Filter, Zap, Target, BookOpen, ChevronDown, ChevronUp, Clock, History, Trash2, Shield, Droplets, Eye, Coffee, Pill, Moon, Sun, Heart } from "lucide-react";
+import { Brain, CloudRain, Thermometer, Wind, Activity, AlertTriangle, CheckCircle, XCircle, TrendingUp, TrendingDown, Minus, Database, Cpu, RefreshCw, Bell, Sparkles, Filter, Zap, Target, BookOpen, ChevronDown, ChevronUp, Clock, History, Trash2, Shield, Droplets, Eye, Pill, Moon, Heart, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, ReferenceLine } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 interface PredictionData {
   sleep: number[];
@@ -68,6 +71,7 @@ interface HourlyRisk {
 
 const PredictionTool = () => {
   const { toast } = useToast();
+  const { user, profile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [expandedPipeline, setExpandedPipeline] = useState<string | null>(null);
@@ -93,6 +97,110 @@ const PredictionTool = () => {
     pressure: '',
     pollution: ''
   });
+
+  // Load prediction history from database
+  useEffect(() => {
+    if (user) {
+      loadPredictionHistory();
+    }
+  }, [user]);
+
+  // Subscribe to realtime updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('prediction-history')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'prediction_history',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const newEntry = mapDatabaseToHistory(payload.new);
+          setPredictionHistory(prev => [newEntry, ...prev].slice(0, 10));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  const mapDatabaseToHistory = (row: any): HistoryEntry => ({
+    id: row.id,
+    timestamp: new Date(row.created_at),
+    result: {
+      risk: row.risk_level as 'Low' | 'Medium' | 'High',
+      confidence: row.confidence,
+      suggestions: row.suggestions || [],
+      riskScore: row.risk_score
+    },
+    formData: {
+      sleep: [row.sleep_hours],
+      stress: [row.stress_level],
+      activity: [row.activity_level],
+      screenTime: [row.screen_time],
+      medication: row.medication || '',
+      temperature: row.temperature?.toString() || '',
+      humidity: row.humidity?.toString() || '',
+      pressure: row.pressure?.toString() || '',
+      pollution: row.pollution?.toString() || ''
+    }
+  });
+
+  const loadPredictionHistory = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('prediction_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (error) {
+      console.error('Error loading history:', error);
+      return;
+    }
+
+    const history = data.map(mapDatabaseToHistory);
+    setPredictionHistory(history);
+  };
+
+  const savePredictionToDatabase = async (result: PredictionResult, data: PredictionData) => {
+    if (!user) return;
+
+    const { error } = await supabase.from('prediction_history').insert({
+      user_id: user.id,
+      risk_level: result.risk,
+      risk_score: result.riskScore,
+      confidence: result.confidence,
+      suggestions: result.suggestions,
+      sleep_hours: data.sleep[0],
+      stress_level: data.stress[0],
+      activity_level: data.activity[0],
+      screen_time: data.screenTime[0],
+      medication: data.medication || null,
+      temperature: parseFloat(data.temperature) || null,
+      humidity: parseFloat(data.humidity) || null,
+      pressure: parseFloat(data.pressure) || null,
+      pollution: parseFloat(data.pollution) || null
+    });
+
+    if (error) {
+      console.error('Error saving prediction:', error);
+      toast({
+        title: "Save failed",
+        description: "Could not save prediction to history.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Generate alerts based on input data
   const generateAlerts = (data: PredictionData, riskScore: number): Alert[] => {
@@ -582,14 +690,19 @@ const PredictionTool = () => {
     const hourlyRisk = generateHourlyRisk(formData, result.riskScore);
     setHourlyRiskData(hourlyRisk);
     
-    // Add to history
-    const historyEntry: HistoryEntry = {
-      id: Date.now().toString(),
-      timestamp: new Date(),
-      result,
-      formData: { ...formData }
-    };
-    setPredictionHistory(prev => [historyEntry, ...prev].slice(0, 10));
+    // Save to database if user is authenticated
+    if (user) {
+      await savePredictionToDatabase(result, formData);
+    } else {
+      // Add to local history for non-authenticated users
+      const historyEntry: HistoryEntry = {
+        id: Date.now().toString(),
+        timestamp: new Date(),
+        result,
+        formData: { ...formData }
+      };
+      setPredictionHistory(prev => [historyEntry, ...prev].slice(0, 10));
+    }
     
     setIsLoading(false);
     setPipelineActive(false);
@@ -612,7 +725,23 @@ const PredictionTool = () => {
     }
   };
 
-  const clearHistory = () => {
+  const clearHistory = async () => {
+    if (user) {
+      const { error } = await supabase
+        .from('prediction_history')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Could not clear history.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
     setPredictionHistory([]);
     toast({
       title: "History Cleared",
@@ -643,7 +772,7 @@ const PredictionTool = () => {
   };
 
   return (
-    <section id="prediction-tool" className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+    <section id="prediction-tool" className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5 pt-24">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -652,6 +781,27 @@ const PredictionTool = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Experience our migraine prediction system with real-time AI analysis
           </p>
+          {user && profile && (
+            <div className="mt-4 inline-flex items-center space-x-2 px-4 py-2 bg-primary/10 rounded-full">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-semibold">
+                {profile.username?.[0]?.toUpperCase() || 'U'}
+              </div>
+              <span className="text-sm text-primary font-medium">Welcome back, {profile.username}!</span>
+            </div>
+          )}
+          {!user && (
+            <div className="mt-4 p-4 bg-accent/10 rounded-xl border border-accent/20 max-w-md mx-auto">
+              <p className="text-sm text-muted-foreground mb-3">
+                <LogIn className="w-4 h-4 inline mr-2" />
+                Sign in to save your prediction history
+              </p>
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent hover:text-white">
+                  Sign In / Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
         
         {/* Input Form - Lifestyle & Environmental Side by Side */}
