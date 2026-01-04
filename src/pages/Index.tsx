@@ -6,6 +6,7 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import PredictionTool from "@/components/PredictionTool";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
 const Index = () => {
   useEffect(() => {
@@ -38,21 +39,24 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Navbar */}
+      <Navbar />
+      
       {/* Hero Section */}
       <HeroSection />
       
       {/* About Project */}
-      <div className="reveal-on-scroll">
+      <div id="about" className="reveal-on-scroll">
         <AboutSection />
       </div>
       
       {/* Features */}
-      <div className="reveal-on-scroll">
+      <div id="features" className="reveal-on-scroll">
         <FeaturesSection />
       </div>
       
       {/* How It Works */}
-      <div className="reveal-on-scroll">
+      <div id="how-it-works" className="reveal-on-scroll">
         <HowItWorksSection />
       </div>
       
